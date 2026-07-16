@@ -34,7 +34,7 @@ export default function ReportPage() {
         startIcon={<ArrowBackIcon />}
         onClick={() => router.push("/history")}
         color="inherit"
-        sx={{ color: "text.secondary", mb: 3, ml: { xs: 5, md: 0 } }}
+        sx={{ color: "text.secondary", mb: 3, ml: -2 }}
       >
         Back to history
       </Button>
