@@ -1,0 +1,19 @@
+# --- Phase 3: persistence ---
+supabase
+
+# --- Phase 2: API ---
+fastapi
+uvicorn[standard]
+
+# --- Phase 1: agent core ---
+langgraph
+langchain-community
+langchain-core
+ddgs
+trafilatura
+lxml_html_clean   # justext (trafilatura dep) needs this since lxml split it out
+openai
+langfuse<3
+pydantic
+python-dotenv
+# FastAPI / Supabase / Upstash deps get added in their own phases.

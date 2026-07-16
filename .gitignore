@@ -1,0 +1,20 @@
+# secrets — never commit
+.env
+.env.local
+*.env.bak
+
+# python
+backend/venv/
+__pycache__/
+*.pyc
+
+# node / next
+node_modules/
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+
+# tooling / os
+.claude/
+.DS_Store
+frontend/tsconfig.tsbuildinfo
