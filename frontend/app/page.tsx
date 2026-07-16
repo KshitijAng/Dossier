@@ -115,6 +115,7 @@ export default function HomePage() {
       </Paper>
 
       {!result && !loading && (
+        <>
         <Stack direction="row" flexWrap="wrap" gap={1} justifyContent="center" sx={{ mt: 3 }}>
           {EXAMPLES.map((ex) => (
             <Button
@@ -138,6 +139,15 @@ export default function HomePage() {
             </Button>
           ))}
         </Stack>
+        <Typography
+          variant="caption"
+          color="text.disabled"
+          sx={{ display: "block", textAlign: "center", mt: 4 }}
+        >
+          ⏳ First query after some inactivity can take up to a minute — the
+          free-tier backend needs to wake up first.
+        </Typography>
+        </>
       )}
 
       {error && (
