@@ -4,6 +4,10 @@
 searches the web, reads sources, writes a cited report, and critiques its own
 work before answering. Built with LangGraph.
 
+**🔗 Live demo: [dossier-three-woad.vercel.app](https://dossier-three-woad.vercel.app/)**
+*(free-tier backend sleeps when idle — the first query after a while takes ~1
+minute to wake it, then it's normal speed)*
+
 ## Screenshots
 
 |  |  |
