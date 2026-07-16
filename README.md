@@ -46,7 +46,9 @@ All managed services — no Docker, nothing to self-host.
 | **Langfuse** | Traces every node; captures token usage and latency per step | Makes the agent observable — you can see *why* a run scored low, per node |
 | **Supabase (Postgres)** | Persists every research run; powers the History view | Managed Postgres with a simple client and a generous free tier |
 | **FastAPI** | Wraps the agent in a REST API (`/research`, `/runs`) | Minimal, typed, auto-generated `/docs` |
-| **Next.js + MUI v5** | Frontend (deployed on Vercel) | App Router + a mature component library, no custom CSS framework |
+| **Next.js + MUI v5** | Frontend — sidebar, history, light/dark theming | App Router + a mature component library, no custom CSS framework |
+| **Render** | Hosts the FastAPI backend | Runs Python web services straight from the repo, free tier, no Docker |
+| **Vercel** | Hosts the Next.js frontend | Built for Next.js — zero-config deploys from the repo, free tier |
 
 ## Environment variables
 
