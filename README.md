@@ -54,29 +54,6 @@ All managed services — no Docker, nothing to self-host.
 | **Render** | Hosts the FastAPI backend | Runs Python web services straight from the repo, free tier, no Docker |
 | **Vercel** | Hosts the Next.js frontend | Built for Next.js — zero-config deploys from the repo, free tier |
 
-## Environment variables
-
-| Variable                       | Needed in | Purpose                                 |
-| ------------------------------ | --------- | --------------------------------------- |
-| `GITHUB_TOKEN`                 | now       | Auth for GitHub Models (the LLM)        |
-| `GITHUB_MODEL`                 | optional  | Model name (default `gpt-4o-mini`)      |
-| `GITHUB_MODELS_BASE_URL`       | optional  | GitHub Models endpoint URL              |
-| `FRONTEND_ORIGINS`             | on deploy | CORS allow-list (default `localhost:3000`; set to Vercel URL in prod) |
-| `LANGFUSE_PUBLIC_KEY` / `_SECRET_KEY` | optional | Tracing (nodes run untraced without it) |
-| `SUPABASE_URL` / `_KEY`        | optional  | Persisting research runs (run `schema.sql` once) |
-
-Supabase degrades gracefully — leave it blank and the agent still runs, just
-without saving to History.
-
-Frontend (`frontend/.env.local`): `NEXT_PUBLIC_API_URL` plus
-`NEXT_PUBLIC_GITHUB_URL` / `NEXT_PUBLIC_LINKEDIN_URL` for the sidebar links.
-
-## Running
-
-- **Everything at once (dev):** `npm run dev` from the repo root — starts the
-  API and the Next.js frontend together.
-- **Agent only (CLI):** `python -m agent.graph "<question>"`
-- **API only:** `python -m uvicorn main:app --reload` — docs at `/docs`
 
 ## API endpoints
 
@@ -97,15 +74,15 @@ the whole graph — each node reads it and returns the fields it wants to update
 
 The four pieces:
 
-1. **State** — a `TypedDict` (`ResearchState`) that every node shares. A node
+1. **State** - a `TypedDict` (`ResearchState`) that every node shares. A node
    returns only the keys it changed; LangGraph merges them in.
-2. **Nodes** — plain functions `state -> dict`. The five `*_node` functions.
-3. **Edges** — the wiring:
+2. **Nodes** - plain functions `state -> dict`. The five `*_node` functions.
+3. **Edges** - the wiring:
    - normal edge: always go A → B (`add_edge`)
    - conditional edge: a function returns the *name* of the next node, which is
      how we loop `critic → planner` or finish `critic → END`
      (`add_conditional_edges`)
-4. **Compile & run** — `graph = builder.compile()`, then
+4. **Compile & run** - `graph = builder.compile()`, then
    `graph.invoke({"query": ...})` runs `START → … → END` and returns the final
    state.
 
@@ -116,9 +93,7 @@ step is a named checkpoint (good for tracing) and nodes stay decoupled (they
 only touch shared state, never call each other), so the flow can be rewired
 without rewriting the nodes.
 
-The pattern is reusable beyond research: **decompose → gather → synthesize →
-self-critique with a bounded retry loop**. The node *names* are specific to this
-use case; the shape generalizes.
+
 ```
 StateGraph(schema) → add_node / add_edge → compile() → invoke(state)
    define shape         wire the flow        make runnable    run it
