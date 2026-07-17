@@ -106,6 +106,8 @@ def synthesizer_node(state: ResearchState) -> dict:
     report: CitedReport = _structured(
         "You are a research writer. Using ONLY the numbered sources provided, write a "
         "structured report answering the user's question. Cite sources inline as [n]. "
+        "Always finish with a final section titled 'Conclusion' that directly answers "
+        "the user's question with a clear, decisive takeaway or recommendation. "
         "Populate `citations` with the source URLs in numeric order.",
         f"Question: {state['query']}\n\nSources:\n{context}",
         CitedReport,

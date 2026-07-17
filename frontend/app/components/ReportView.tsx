@@ -71,6 +71,27 @@ export default function ReportView({ result }: { result: ResearchResult }) {
               </Typography>
             ),
             p: ({ children }) => <Typography variant="body1">{children}</Typography>,
+            // Inline [n] citations render as markdown links; show them as small
+            // muted superscript markers instead of default browser-blue links.
+            a: ({ href, children }) => (
+              <Box
+                component="a"
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                sx={{
+                  color: "text.secondary",
+                  textDecoration: "none",
+                  fontSize: "0.7em",
+                  fontWeight: 600,
+                  verticalAlign: "super",
+                  lineHeight: 0,
+                  "&:hover": { color: "text.primary" },
+                }}
+              >
+                {children}
+              </Box>
+            ),
           }}
         >
           {stripSources(result.report)}
