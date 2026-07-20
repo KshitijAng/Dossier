@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import {
   Alert,
   Box,
@@ -13,7 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
-import { runResearch, ResearchResult } from "./lib/api";
+import { useResearch } from "./lib/research-context";
 import { RADIUS } from "./theme";
 import ResearchLoader from "./components/ResearchLoader";
 import ReportView from "./components/ReportView";
@@ -31,25 +30,9 @@ const EXAMPLES = [
 ];
 
 export default function HomePage() {
-  const [query, setQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [result, setResult] = useState<ResearchResult | null>(null);
-
-  async function submit(q: string) {
-    const trimmed = q.trim();
-    if (!trimmed || loading) return;
-    setLoading(true);
-    setError(null);
-    setResult(null);
-    try {
-      setResult(await runResearch(trimmed));
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Something went wrong.");
-    } finally {
-      setLoading(false);
-    }
-  }
+  // Shared state lives in the layout, so navigating to History and back keeps
+  // the query and the report (and lets an in-flight run finish).
+  const { query, setQuery, loading, error, result, submit } = useResearch();
 
   return (
     <Container maxWidth="md" sx={{ pt: { xs: 8, md: 10 }, pb: { xs: 12, md: 12 }, px: { xs: 2, md: 3 } }}>

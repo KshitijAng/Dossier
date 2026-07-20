@@ -4,6 +4,7 @@ import { ReactNode, useState } from "react";
 import { Box, Drawer, IconButton, Typography } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Sidebar from "./Sidebar";
+import { ResearchProvider } from "../lib/research-context";
 
 const SIDEBAR_WIDTH = 260;
 
@@ -11,6 +12,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
+    <ResearchProvider>
     <Box sx={{ display: "flex", minHeight: "100vh" }}>
       {/* Desktop: permanent sidebar */}
       <Box
@@ -83,5 +85,6 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </Box>
       </Box>
     </Box>
+    </ResearchProvider>
   );
 }

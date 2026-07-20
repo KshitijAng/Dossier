@@ -5,6 +5,7 @@ merges them back in.
 """
 
 import os
+from concurrent.futures import ThreadPoolExecutor
 from typing import List
 
 from dotenv import load_dotenv
@@ -59,11 +60,12 @@ def planner_node(state: ResearchState) -> dict:
 
 @observe()
 def searcher_node(state: ResearchState) -> dict:
-    """Run a web search for each sub-question."""
+    """Run a web search for each sub-question (searches run concurrently)."""
+    subs = state["sub_questions"]
     results: List[dict] = []
-    for q in state["sub_questions"]:
-        for r in web_search(q, max_results=3):
-            results.append({**r.model_dump(), "sub_question": q})
+    with ThreadPoolExecutor(max_workers=5) as pool:
+        for q, hits in zip(subs, pool.map(lambda s: web_search(s, max_results=3), subs)):
+            results.extend({**r.model_dump(), "sub_question": q} for r in hits)
     return {"search_results": results}
 
 
@@ -74,7 +76,8 @@ def reader_node(state: ResearchState) -> dict:
     for r in state["search_results"]:
         by_question.setdefault(r["sub_question"], []).append(r["url"])
 
-    pages: List[dict] = []
+    # Pick the top 2 URLs per sub-question (deduped) up front...
+    targets: List[str] = []
     seen: set[str] = set()
     for urls in by_question.values():
         taken = 0
@@ -84,10 +87,13 @@ def reader_node(state: ResearchState) -> dict:
             if url in seen:
                 continue
             seen.add(url)
-            page = read_page(url)
-            if page:
-                pages.append(page.model_dump())
-                taken += 1
+            targets.append(url)
+            taken += 1
+
+    # ...then fetch them concurrently. Page fetching is the agent's biggest
+    # latency sink; doing it in parallel turns minutes into seconds.
+    with ThreadPoolExecutor(max_workers=8) as pool:
+        pages = [p.model_dump() for p in pool.map(read_page, targets) if p]
     return {"page_contents": pages}
 
 
